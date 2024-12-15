@@ -1,0 +1,29 @@
+package fr.insa.mas.AdminService.DataBase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class AdminRepository {
+	static Connection connection = Mysqlconnection.connection();
+	
+	
+	public static void createTable() {
+		String request = "CREATE TABLE Admin (\n"
+				+ "    id INT AUTO_INCREMENT PRIMARY KEY,\n"
+				+ "    name VARCHAR(255) NOT NULL,\n"
+				+ "    email VARCHAR(255) UNIQUE NOT NULL\n"
+				+ ")\n";
+		try {
+			PreparedStatement state = connection.prepareStatement(request);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	
+
+}

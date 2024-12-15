@@ -1,0 +1,12 @@
+package fr.insa.mas.AdminService.DataBase;
+
+
+
+public interface AdminRepository {
+	
+	
+	
+	
+	
+
+}

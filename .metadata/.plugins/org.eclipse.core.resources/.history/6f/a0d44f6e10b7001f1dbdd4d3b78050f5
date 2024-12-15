@@ -1,0 +1,5 @@
+package fr.insa.mas.StudentsListService.model;
+
+public class Student {
+
+}

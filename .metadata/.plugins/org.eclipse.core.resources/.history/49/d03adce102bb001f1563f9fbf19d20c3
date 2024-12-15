@@ -1,0 +1,18 @@
+package fr.insa.mas.AdminService.resource;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class Mysqlconnection {
+	private String URL = "jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_073";
+	private String User = "projet_gei_073";
+	private String password = "dieGho1x";
+	
+	try {
+		Connection connection = DriverManager.getConnection(URL, User, password);
+	}catch(Exception e) {
+		System.out.println("erreur : " + e.getMessage());
+	}
+	
+	
+}

@@ -1,0 +1,5 @@
+package fr.insa.mas.RequestService.model;
+
+public class Request {
+
+}

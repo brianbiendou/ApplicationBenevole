@@ -1,0 +1,8 @@
+INDEX VERSION 1.4+/home/biendou-djay/eclipse-workspace/.metadata/.plugins/org.eclipse.wst.jsdt.core/indexes
+3278308894.index
+986933390.index
+3666970918.index
+2587524929.index
+4249520909.index
+242404547.index
+757969926.index

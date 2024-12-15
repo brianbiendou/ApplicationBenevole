@@ -1,0 +1,15 @@
+package fr.insa.mas.AdminService.DataBase;
+
+import org.springframework.data.repository.CrudRepository;
+
+import fr.insa.mas.AdminService.model.Admin;
+
+public interface AdminRepository extends CrudRepository<Admin,Long>{
+	
+	
+
+	
+	
+	
+
+}

@@ -1,0 +1,5 @@
+package fr.insa.mas.RequestService.resource;
+
+public class RequestController {
+
+}
