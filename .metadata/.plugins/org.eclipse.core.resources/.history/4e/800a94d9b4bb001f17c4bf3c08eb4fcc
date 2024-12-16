@@ -1,0 +1,5 @@
+package fr.insa.mas.VolunteerService.config;
+
+public class VolunteerConfig {
+
+}

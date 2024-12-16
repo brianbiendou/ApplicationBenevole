@@ -1,56 +1,58 @@
 package fr.insa.mas.VolunteerService.resource;
 
-
 import fr.insa.mas.VolunteerService.model.Volunteer;
+import fr.insa.mas.VolunteerService.DataBase.VolunteerRepository;
+
+import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/volunteers")
 public class VolunteerController {
 
-    private final List<Volunteer> volunteers = new ArrayList<>();
+    private final VolunteerRepository volunteerRepository;
 
-    // Constructeur avec des volontaires en mémoire pour l'exemple
-    public VolunteerController() {
-        volunteers.add(new Volunteer(1L, "Alice Brown", "alice.brown@example.com", "123456789"));
-        volunteers.add(new Volunteer(2L, "Bob White", "bob.white@example.com", "987654321"));
+    // Injection du repository via le constructeur
+    @Autowired
+    public VolunteerController(VolunteerRepository volunteerRepository) {
+        this.volunteerRepository = volunteerRepository;
     }
 
     // Endpoint pour obtenir tous les volontaires
     @GetMapping
     public List<Volunteer> getAllVolunteers() {
-        return volunteers;
+        return (List<Volunteer>) volunteerRepository.findAll(); // Retourne tous les volontaires depuis la BD
     }
 
     // Endpoint pour obtenir un volontaire par son ID
     @GetMapping("/{id}")
     public Volunteer getVolunteerById(@PathVariable Long id) {
-        return volunteers.stream()
-                .filter(volunteer -> volunteer.getId().equals(id))
-                .findFirst()
-                .orElse(null); // lever une exception 
+        Optional<Volunteer> volunteer = volunteerRepository.findById(id);
+        return volunteer.orElse(null); // Ou lever une exception personnalisée si nécessaire
     }
 
     // Endpoint pour ajouter un volontaire
-    @PostMapping
+    @PostMapping("/add")
     public String addVolunteer(@RequestBody Volunteer volunteer) {
-        volunteers.add(volunteer);
+        volunteerRepository.save(volunteer); // Sauvegarde le volontaire dans la BD
         return "Volunteer added successfully!";
     }
 
     // Endpoint pour mettre à jour un volontaire
     @PutMapping("/{id}")
     public String updateVolunteer(@PathVariable Long id, @RequestBody Volunteer updatedVolunteer) {
-        for (Volunteer volunteer : volunteers) {
-            if (volunteer.getId().equals(id)) {
-                volunteer.setName(updatedVolunteer.getName());
-                volunteer.setEmail(updatedVolunteer.getEmail());
-                volunteer.setPhoneNumber(updatedVolunteer.getPhoneNumber());
-                return "Volunteer updated successfully!";
-            }
+        Optional<Volunteer> existingVolunteer = volunteerRepository.findById(id);
+        if (existingVolunteer.isPresent()) {
+            Volunteer volunteer = existingVolunteer.get();
+            volunteer.setName(updatedVolunteer.getName());
+            volunteer.setEmail(updatedVolunteer.getEmail());
+            volunteer.setPhoneNumber(updatedVolunteer.getPhoneNumber());
+            volunteerRepository.save(volunteer); // Met à jour le volontaire dans la BD
+            return "Volunteer updated successfully!";
         }
         return "Volunteer not found!";
     }
@@ -58,7 +60,11 @@ public class VolunteerController {
     // Endpoint pour supprimer un volontaire
     @DeleteMapping("/{id}")
     public String deleteVolunteer(@PathVariable Long id) {
-        boolean removed = volunteers.removeIf(volunteer -> volunteer.getId().equals(id));
-        return removed ? "Volunteer deleted successfully!" : "Volunteer not found!";
+        Optional<Volunteer> existingVolunteer = volunteerRepository.findById(id);
+        if (existingVolunteer.isPresent()) {
+            volunteerRepository.delete(existingVolunteer.get()); // Supprime le volontaire de la BD
+            return "Volunteer deleted successfully!";
+        }
+        return "Volunteer not found!";
     }
 }

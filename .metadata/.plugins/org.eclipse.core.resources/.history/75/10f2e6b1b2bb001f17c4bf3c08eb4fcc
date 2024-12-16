@@ -1,0 +1,5 @@
+package fr.insa.mas.UserService.config;
+
+public class UserConfig {
+
+}
