@@ -40,6 +40,30 @@ public class UserController {
     }
 
     // Endpoints pour ajouter un utilisateur
+    @PostMapping
+    public String addUser(@RequestBody User user) {
+        // Sauvegarder l'utilisateur dans la table user
+    	if (user.getRole()!= null) {
+    		if (user.getRole().equals("demandeur")) {
+    			String demandServiceUrl = "http://localhost:8095/api/demandeur";
+    	        restTemplate.postForObject(demandServiceUrl, user, String.class);
+    	        return "Appel ajout demandeur";
+    		}
+    		else if (user.getRole().equals("admin")) {
+    			String adminServiceUrl = "http://localhost:8094/api/admin";
+    	        restTemplate.postForObject(adminServiceUrl, user, String.class);
+    	        return "Appel ajout admin";
+    		}
+    		else if (user.getRole().equals("volunteer")) {
+    			String volunServiceUrl = "http://localhost:8093/api/volunteers";
+    	        restTemplate.postForObject(volunServiceUrl, user, String.class);
+    	        return "Appel ajout volunteer";
+    		}
+    	}
+        return "Invalid role";
+    }
+    
+    
     @PostMapping("/demand")
     public long addDemand(@RequestBody User user) {
         // Sauvegarder l'utilisateur dans la table user
