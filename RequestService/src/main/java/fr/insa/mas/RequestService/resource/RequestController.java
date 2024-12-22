@@ -1,7 +1,10 @@
 package fr.insa.mas.RequestService.resource;
 
 
+import fr.insa.mas.RequestService.DataBase.RequestRepository;
 import fr.insa.mas.RequestService.model.Request;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -10,56 +13,100 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/requests")
 public class RequestController {
+	@Autowired
+	private RequestRepository requestRepository;
 
     private final List<Request> requests = new ArrayList<>();
 
-    // Constructeur avec des demandes en mémoire pour l'exemple
     public RequestController() {
-        requests.add(new Request(1L, "Collect Package", "Collect a package from the post office", "waiting", 101L));
-        requests.add(new Request(2L, "Wash Clothes", "Help washing clothes in hospital", "validated", 102L));
+      
     }
 
     // Endpoint pour obtenir toutes les demandes
-    @GetMapping
+    @GetMapping("/get")
     public List<Request> getAllRequests() {
         return requests;
     }
 
     // Endpoint pour obtenir une demande par son ID
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public Request getRequestById(@PathVariable Long id) {
-        return requests.stream()
-                .filter(request -> request.getId().equals(id))
-                .findFirst()
-                .orElse(null); // Ou lever une exception personnalisée si nécessaire
+        return requestRepository.findById(id).orElse(null);
     }
 
     // Endpoint pour ajouter une demande
     @PostMapping
     public String addRequest(@RequestBody Request request) {
-        requests.add(request);
+        requestRepository.save(request);
         return "Request added successfully!";
     }
 
     // Endpoint pour mettre à jour une demande
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public String updateRequest(@PathVariable Long id, @RequestBody Request updatedRequest) {
-        for (Request request : requests) {
-            if (request.getId().equals(id)) {
-                request.setTitle(updatedRequest.getTitle());
-                request.setDescription(updatedRequest.getDescription());
-                request.setStatus(updatedRequest.getStatus());
-                request.setUserId(updatedRequest.getUserId());
-                return "Request updated successfully!";
-            }
-        }
-        return "Request not found!";
+    	return requestRepository.findById(id)
+                .map(request -> {
+                    request.setState(updatedRequest.getState());
+                    request.setDescription(updatedRequest.getDescription());
+                    request.setVolunteerID(updatedRequest.getVolunteerID());
+                    request.setDemandeurID(updatedRequest.getDemandeurID());
+                    requestRepository.save(request); // Sauvegarde des modifications
+                    return "Request updated successfully!";
+                })
+                .orElse("Request not found!"); // Si la requete n'existe pas
     }
 
-    // Endpoint pour supprimer une demande
-    @DeleteMapping("/{id}")
-    public String deleteRequest(@PathVariable Long id) {
-        boolean removed = requests.removeIf(request -> request.getId().equals(id));
-        return removed ? "Request deleted successfully!" : "Request not found!";
+    @PutMapping("/update/{id}/{state}")
+    public String changeState(@PathVariable Long id, @PathVariable String state) {
+    	return requestRepository.findById(id).map(request -> {
+    		request.setState(state);
+    		requestRepository.save(request);
+    		return "State changed";
+    	})
+    	.orElse("Request not found");
     }
-}
+    
+    @PutMapping("/accept/{id}/{volID}")
+    public String acceptVolunteer(@PathVariable Long id, @PathVariable Long volID) {
+    	return requestRepository.findById(id).map(request -> {
+    		request.setVolunteerID(volID);
+    		request.setState("accepted");
+    		requestRepository.save(request);
+    		return "State changed";
+    	})
+    	.orElse("Request not found");
+    }
+    
+    @PutMapping("remove/{volunteerID}")
+	public String removeAllDemandeur(@PathVariable Long volunteerID) {
+		for (Request r : requestRepository.findAll()){
+			if (r.getVolunteerID() != null && r.getVolunteerID().equals(volunteerID)) {
+				r.setVolunteerID(null);
+				requestRepository.save(r);
+			}
+		};return "Successfully removed volunteer";
+	}
+    
+    
+    // Endpoint pour supprimer une demande
+    @DeleteMapping("delete/{id}")
+    public String deleteRequest(@PathVariable Long id) {
+        if (requestRepository.existsById(id)) {
+        	
+        	requestRepository.deleteById(id);
+        	return "Request deleted successfully";
+        } else {
+        	return "Request not found";
+        }
+    }
+    
+    @DeleteMapping("delete/demandeur/{demandeurID}")
+    	public String deleteAllDemandeur(@PathVariable Long demandeurID) {
+    		for (Request r : requestRepository.findAll()){
+    			if (r.getDemandeurID().equals(demandeurID)) {
+    				requestRepository.delete(r);
+    			}
+    		};return "Successfully deleted entries";
+    	}
+    	
+   }

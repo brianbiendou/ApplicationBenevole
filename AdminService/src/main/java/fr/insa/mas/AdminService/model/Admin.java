@@ -7,10 +7,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "admin") // Remplace "admin" par le nom exact de ta table si besoin
+@Table(name = "admin")
 public class Admin {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 	
     private String name;

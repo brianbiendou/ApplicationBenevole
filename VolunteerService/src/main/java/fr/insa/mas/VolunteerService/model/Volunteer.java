@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 public class Volunteer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Pour auto-incrémenter l'ID
     private Long id;
     private String name;
     private String email;

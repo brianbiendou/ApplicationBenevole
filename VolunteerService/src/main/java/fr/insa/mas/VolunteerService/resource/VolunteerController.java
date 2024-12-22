@@ -3,9 +3,10 @@ package fr.insa.mas.VolunteerService.resource;
 import fr.insa.mas.VolunteerService.model.Volunteer;
 import fr.insa.mas.VolunteerService.DataBase.VolunteerRepository;
 
-import org.apache.catalina.User;
+//import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +14,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/volunteers")
 public class VolunteerController {
-
+	@Autowired
     private final VolunteerRepository volunteerRepository;
 
     // Injection du repository via le constructeur
@@ -22,8 +23,12 @@ public class VolunteerController {
         this.volunteerRepository = volunteerRepository;
     }
 
+    @Autowired
+    private RestTemplate restTemplate;
+
+    
     // Endpoint pour obtenir tous les volontaires
-    @GetMapping
+    @GetMapping("/get")
     public List<Volunteer> getAllVolunteers() {
         return (List<Volunteer>) volunteerRepository.findAll(); // Retourne tous les volontaires depuis la BD
     }
@@ -36,9 +41,11 @@ public class VolunteerController {
     }
 
     // Endpoint pour ajouter un volontaire
-    @PostMapping("/add")
+    @PostMapping
     public String addVolunteer(@RequestBody Volunteer volunteer) {
-        volunteerRepository.save(volunteer); // Sauvegarde le volontaire dans la BD
+    	String userServiceUrl = "http://localhost:8091/api/users/volunteer";
+        volunteer.setId(Long.parseLong((String)(restTemplate.postForObject(userServiceUrl, volunteer, String.class))));
+        volunteerRepository.save(volunteer);
         return "Volunteer added successfully!";
     }
 
@@ -58,7 +65,7 @@ public class VolunteerController {
     }
 
     // Endpoint pour supprimer un volontaire
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public String deleteVolunteer(@PathVariable Long id) {
         Optional<Volunteer> existingVolunteer = volunteerRepository.findById(id);
         if (existingVolunteer.isPresent()) {

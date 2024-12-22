@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="AdminService/src/main/java"/>
+	<classpathentry kind="src" path="AdminService/src/test/java"/>
+	<classpathentry kind="src" path="AnalyseProject/src/main/java"/>
+	<classpathentry kind="src" path="msDiscovery/src/main/java"/>
+	<classpathentry kind="src" path="msDiscovery/src/test/java"/>
+	<classpathentry kind="src" path="RequestService/src/main/java"/>
+	<classpathentry kind="src" path="RequestService/src/test/java"/>
+	<classpathentry kind="src" path="RestApp/src/main/java"/>
+	<classpathentry kind="src" path="RestProject/src/main/java"/>
+	<classpathentry kind="src" path="StudentEvalService/src/main/java"/>
+	<classpathentry kind="src" path="StudentEvalService/src/test/java"/>
+	<classpathentry kind="src" path="UserService/src/main/java"/>
+	<classpathentry kind="src" path="UserService/src/test/java"/>
+	<classpathentry kind="src" path="VolunteerService/src/main/java"/>
+	<classpathentry kind="src" path="VolunteerService/src/test/java"/>
+	<classpathentry kind="output" path="AdminService/target/classes"/>
+</classpath>

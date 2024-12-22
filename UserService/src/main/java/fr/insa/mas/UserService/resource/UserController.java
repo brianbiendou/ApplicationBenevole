@@ -26,45 +26,44 @@ public class UserController {
     private RestTemplate restTemplate;
 
     // Endpoint pour obtenir tous les utilisateurs
-    @GetMapping
+    @GetMapping("/get")
     public List<User> getAllUsers() {
         return (List<User>) userRepository.findAll(); // Retourne tous les utilisateurs depuis la BD
     }
 
     // Endpoint pour obtenir un utilisateur par son ID
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public User getUserById(@PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);
+        System.out.println(user);
         return user.orElse(null); // Ou lever une exception personnalisée si nécessaire
     }
 
-    // Endpoint pour ajouter un utilisateur
-    @PostMapping
-    public String addUser(@RequestBody User user) {
+    // Endpoints pour ajouter un utilisateur
+    @PostMapping("/demand")
+    public long addDemand(@RequestBody User user) {
         // Sauvegarder l'utilisateur dans la table user
+    	user.setRole("demandeur");
         userRepository.save(user);
-
-        // Si l'utilisateur est un admin, ajoutez-le au microservice Admin
-        if ("admin".equals(user.getRole())) {
-        	System.out.println("********************************************************************************************************************************");
-            // URL de l'API AdminService pour ajouter un admin
-            String adminServiceUrl = "http://insa-20929.insa-toulouse.fr:8094/api/admins";
-            restTemplate.postForObject(adminServiceUrl, user, User.class);
-        }
-
-        // Si l'utilisateur est un volunteer, ajoutez-le au microservice Volunteer
-        if ("volunteer".equals(user.getRole())) {
-            // URL de l'API VolunteerService pour ajouter un volunteer
-            String volunteerServiceUrl = "http://insa-20929.insa-toulouse.fr:8093/api/volunteers";
-            restTemplate.postForObject(volunteerServiceUrl, user, User.class);
-            System.out.println("#########################################################################################################################################");
-        }
-
-        return "User added successfully!";
+        return user.getId();
+    }
+    @PostMapping("/admin")
+    public long addAdmin(@RequestBody User user) {
+        // Sauvegarder l'utilisateur dans la table user
+    	user.setRole("admin");
+        userRepository.save(user);
+        return user.getId();
+    }
+    @PostMapping("/volunteer")
+    public long addVolunteer(@RequestBody User user) {
+        // Sauvegarder l'utilisateur dans la table user
+    	user.setRole("volunteer");
+        userRepository.save(user);
+        return user.getId();
     }
 
     // Endpoint pour mettre à jour un utilisateur
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public String updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
         Optional<User> existingUser = userRepository.findById(id);
         if (existingUser.isPresent()) {
@@ -91,18 +90,28 @@ public class UserController {
     }
 
     // Endpoint pour supprimer un utilisateur
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public String deleteUser(@PathVariable Long id) {
         Optional<User> existingUser = userRepository.findById(id);
         if (existingUser.isPresent()) {
+        	if (existingUser.get().getRole() != null) {
+        		
+	        	if(existingUser.get().getRole().equals("demandeur")) {
+	        		String demandeurServiceUrl = "http://localhost:8095/api/demandeur/delete/" + id;
+	                restTemplate.delete(demandeurServiceUrl);
+	        	}
+	        	else if (existingUser.get().getRole().equals("admin")) {
+	                String adminServiceUrl = "http://localhost:8094/api/admin/delete/" + id;
+	                restTemplate.delete(adminServiceUrl);        
+	        	}
+	        	else if (existingUser.get().getRole().equals("volunteer")) {
+	        		String volunteerServiceUrl = "http://localhost:8093/api/volunteers/delete/" + id;
+	        		restTemplate.delete(volunteerServiceUrl);
+	        	}
+        	}
             userRepository.delete(existingUser.get()); // Supprime l'utilisateur de la BD
-
+            
             // Supprimer l'utilisateur des microservices correspondants
-            String adminServiceUrl = "http://insa-20929.insa-toulouse.fr:8094/api/admins/" + id;
-            String volunteerServiceUrl = "http://insa-20929.insa-toulouse.fr:8093/api/volunteers/" + id;
-
-            restTemplate.delete(adminServiceUrl);
-            restTemplate.delete(volunteerServiceUrl);
 
             return "User deleted successfully!";
         }

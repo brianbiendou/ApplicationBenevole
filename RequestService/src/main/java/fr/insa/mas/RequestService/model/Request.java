@@ -1,22 +1,33 @@
 package fr.insa.mas.RequestService.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+
+@Entity
+@Table(name = "request") 
 public class Request {
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Pour auto-incrémenter l'ID
     private Long id;
-    private String title;
     private String description;
-    private String status; // waiting, validated, rejected, chosen, realized
-    private Long userId;   // ID de l'utilisateur ayant créé la demande
+    private String state; // waiting, validated, rejected, chosen, realized
+    private Long demandeurID;   // ID de l'utilisateur ayant créé la demande
+    private Long volunteerID;
 
     // Constructeurs
     public Request() {
     }
 
-    public Request(Long id, String title, String description, String status, Long userId) {
+    public Request(Long id, String description, String state, Long demandeurID, Long volunteerID) {
         this.id = id;
-        this.title = title;
         this.description = description;
-        this.status = status;
-        this.userId = userId;
+        this.state = state;
+        this.demandeurID = demandeurID;
+        this.volunteerID = volunteerID;
     }
 
     // Getters et setters
@@ -28,14 +39,6 @@ public class Request {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -44,31 +47,39 @@ public class Request {
         this.description = description;
     }
 
-    public String getStatus() {
-        return status;
+    public String getState() {
+        return state;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setState(String state) {
+        this.state = state;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getDemandeurID() {
+    	return this.demandeurID;
+    }
+    
+    public void setDemandeurID(Long id) {
+    	this.demandeurID = id;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public Long getVolunteerID() {
+    	return this.volunteerID;
     }
-
+    
+    public void setVolunteerID(Long id) {
+    	this.volunteerID = id;
+    }
+    
     // toString pour afficher les informations
     @Override
     public String toString() {
         return "Request{" +
                 "id=" + id +
-                ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", status='" + status + '\'' +
-                ", userId=" + userId +
+                ", state='" + state + '\'' +
+                ", demandeurID=" + demandeurID +
+                ", volunteerID=" + volunteerID +
                 '}';
     }
 }

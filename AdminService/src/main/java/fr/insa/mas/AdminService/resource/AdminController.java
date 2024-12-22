@@ -5,24 +5,34 @@ import fr.insa.mas.AdminService.model.Admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admins")
+@RequestMapping("/api/admin")
 public class AdminController {
-	@Autowired
+	
 	private AdminRepository adminRepository;
 
     // Endpoint pour obtenir tous les administrateurs
-    @GetMapping
+	@Autowired
+	public AdminController(AdminRepository adminRepository) {
+        this.adminRepository = adminRepository;
+    }
+	
+	@Autowired
+    private RestTemplate restTemplate;
+
+	
+    @GetMapping("/get")
     public List<Admin> getAllAdmins() {
         return (List<Admin>) adminRepository.findAll();
     }
 
 
     // Endpoint pour obtenir un administrateur par son ID
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public Admin getAdminById(@PathVariable Long id) {
         return adminRepository.findById(id)
                 .orElse(null); // Ou lever une exception personnalisée si nécessaire
@@ -32,6 +42,8 @@ public class AdminController {
  	// Endpoint pour ajouter un administrateur
     @PostMapping
     public String addAdmin(@RequestBody Admin admin) {
+    	String userServiceUrl = "http://localhost:8091/api/users/admin";
+        admin.setId(Long.parseLong((String)(restTemplate.postForObject(userServiceUrl, admin, String.class))));
         adminRepository.save(admin);
         return "Admin added successfully!";
     }
@@ -41,7 +53,7 @@ public class AdminController {
     
 
     // Endpoint pour mettre à jour un administrateur
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public String updateAdmin(@PathVariable Long id, @RequestBody Admin updatedAdmin) {
         return adminRepository.findById(id)
                 .map(admin -> {
@@ -55,7 +67,7 @@ public class AdminController {
 
 
     // Endpoint pour supprimer un administrateur
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public String deleteAdmin(@PathVariable Long id) {
         if (adminRepository.existsById(id)) {
             adminRepository.deleteById(id);
