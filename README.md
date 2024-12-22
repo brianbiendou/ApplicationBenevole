@@ -1,6 +1,6 @@
 # ApplicationBenevole
 
-Ensembles de µ-services permettant la modification d'une base de donnée en vue de gérée des demandes d'aides de personnes en difficulté.
+Ensembles de µ-services permettant la modification d'une base de donnée en vue de gérer des demandes d'aides de personnes en difficulté.
 
 Les requêtes possibles sont les suivantes :
 
