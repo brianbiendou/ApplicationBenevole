@@ -66,6 +66,13 @@
     </dependencyManagement>
 
     <build>
+    <build>
+    <testResources>
+                <testResource>
+                    <directory>src/main/webapp</directory>
+                </testResource>
+    </testResources>
+</build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
