@@ -3,7 +3,7 @@
 Ensembles de µ-services permettant la modification d'une base de donnée en vue de gérée des demandes d'aides de personnes en difficulté.
 
 Les requêtes possibles sont les suivantes :
-- Requêtes user
+Requêtes user
   
  - GET http://localhost:8091/api/users/get : Retourne la liste de tous les membres de la table "user"
  - GET http://localhost:8091/api/users/get/{id} : Print et retourne le user dont l'id correspond à l'attribut {id} rentré
@@ -18,7 +18,7 @@ Les requêtes possibles sont les suivantes :
  - DELETE http://localhost:8091/api/users/delete/{id} : Supprime le user dont l'id correspond à {id}. Supprime également en cascade le demandeur/volunteer/admin correspondant
 
 
-- Requêtes demandeur
+Requêtes demandeur
  - GET http://localhost:8095/api/demandeur/get : Retourne la liste de tous les membres de la table "demandeur"
  - GET http://localhost:8095/api/demandeur/get/{id} : Print et retourne le demandeur dont l'id correspond à l'attribut {id} rentré
 
@@ -28,7 +28,7 @@ Les requêtes possibles sont les suivantes :
  - DELETE http://localhost:8095/api/demandeur/delete/{id} : Supprime le demandeur dont l'id correspond à {id}. Nécessite aucune request liée. Ne supprime pas le user correspondant. Non recommandé
 
 
-- Requêtes admin
+Requêtes admin
  - GET http://localhost:8094/api/admin/get : Retourne la liste de tous les membres de la table "admin"
  - GET http://localhost:8094/api/admin/get/{id} : Retourne le admin dont l'id correspond à l'attribut {id} rentré
 
@@ -38,7 +38,7 @@ Les requêtes possibles sont les suivantes :
  - DELETE http://localhost:8094/api/admin/delete/{id} : Supprime le admin dont l'id correspond à {id}. Ne supprime pas le user correspondant. Non recommandé
 
 
-- Requêtes volunteer
+Requêtes volunteer
  - GET http://localhost:8093/api/volunteers/get : Retourne la liste de tous les membres de la table "volunteer"
  - GET http://localhost:8093/api/volunteers/{id} : Retourne le volunteer dont l'id correspond à l'attribut {id} rentré
 
@@ -49,7 +49,7 @@ Les requêtes possibles sont les suivantes :
 
 
 
-- Requêtes request
+Requêtes request
  - GET http://localhost:8092/api/requests/get : Retourne la liste de tous les membres de la table "request"
  - GET http://localhost:8092/api/requests/{id} : Retourne la request dont l'id correspond à l'attribut {id} rentré
 
