@@ -3,6 +3,7 @@
 Ensembles de µ-services permettant la modification d'une base de donnée en vue de gérée des demandes d'aides de personnes en difficulté.
 
 Les requêtes possibles sont les suivantes :
+
 Requêtes user
   
  - GET http://localhost:8091/api/users/get : Retourne la liste de tous les membres de la table "user"
